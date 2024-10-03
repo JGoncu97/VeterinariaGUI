@@ -44,6 +44,7 @@ public class Main {
         miCoordinador.setPersonaVO(miPersona);
         miCoordinador.setProcesos(miProceso);
 
+        //Llamado Ventana Principal
         miVPrincipal.setVisible(true);
 
 
