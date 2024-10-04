@@ -1,7 +1,7 @@
 package ventanas;
 
 import coordinador.Coordinador;
-import persona.PersonaVO;
+import vo.PersonaVO;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -9,6 +9,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class VentanaPersona extends JFrame implements ActionListener {
 
@@ -131,9 +132,17 @@ public class VentanaPersona extends JFrame implements ActionListener {
         if(e.getSource()== btnRegistrar){
             registrarPersona();
         }else if(e.getSource() == btnEliminar){
-            eliminarPersona();
+            try {
+                eliminarPersona();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }else if(e.getSource() == btnConsultar){
-            consultarPersona();
+            try {
+                consultarPersona();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }else if(e.getSource() == btnActualizar){
             actualizarPersona();
         }else if(e.getSource() == btnConsultarList){
@@ -155,7 +164,7 @@ public class VentanaPersona extends JFrame implements ActionListener {
         resultado.setText("Persona registrada con éxito: " + nombre);
     }
 
-    public void eliminarPersona(){
+    public void eliminarPersona() throws SQLException {
         String documento = inputDocumento.getText().trim();
         if (documento.isEmpty()) {
             resultado.setText("Por favor, ingrese el documento para eliminar.");
@@ -166,7 +175,7 @@ public class VentanaPersona extends JFrame implements ActionListener {
         resultado.setText("Persona eliminada con éxito.");
     }
 
-    public void consultarPersona(){
+    public void consultarPersona() throws SQLException {
         String documento = inputDocumento.getText().trim();
         if (documento.isEmpty()) {
             resultado.setText("Por favor, ingrese el documento para consultar.");
@@ -191,8 +200,8 @@ public class VentanaPersona extends JFrame implements ActionListener {
             return;
         }
 
-        boolean actualizado = miCoordinador.actualizarPersona(documento, nombre, telefono);
-        if (actualizado) {
+        String actualizado = miCoordinador.actualizarPersona(documento, nombre, telefono);
+        if (actualizado !=null) {
             resultado.setText("Persona actualizada con éxito.");
         } else {
             resultado.setText("Error: Persona no encontrada.");

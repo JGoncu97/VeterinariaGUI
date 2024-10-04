@@ -1,80 +1,143 @@
 package logica;
 
-import animal.MascotaVO;
+
 import coordinador.Coordinador;
-import persona.PersonaVO;
+import vo.PersonaVO;
+import vo.MascotaVO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.SQLException;
+import java.util.List;
 
-public class ProcesosGenerales  {
+public class ProcesosGenerales {
 
-    private HashMap<String, PersonaVO> miPersona = new HashMap<>();
-    private HashMap<String, MascotaVO> miMascota = new HashMap<>();
-    Coordinador miCoordinador;
 
-    public void registrarPersona(String documento, String nombre, String telefono){
+    private Coordinador miCoordinador;
+    private PersonaDAO personaDAO;
+    private MascotaDAO mascotaDAO;
+
+    public ProcesosGenerales(PersonaDAO personaDAO, MascotaDAO mascotaDAO) {
+        this.personaDAO = personaDAO;
+        this.mascotaDAO = mascotaDAO;
+    }
+
+    public ProcesosGenerales() {
+    }
+
+    // Persona operations
+    public String registrarPersona(String documento, String nombre, String telefono) {
         PersonaVO persona = new PersonaVO();
         persona.setDocumento(documento);
         persona.setNombre(nombre);
         persona.setTelefono(telefono);
-        miPersona.put(documento, persona);
+
+        try {
+            return personaDAO.registrarPersona(persona);
+        } catch (Exception e) {
+            System.out.println("Error al registrar persona: " + e.getMessage());
+            return String.valueOf(false);
+        }
     }
 
-    public void registrarMascota(String nombre, String raza, String sexo, String propietario){
+    public String eliminarPersona(String documento) throws SQLException {
+        try {
+            return personaDAO.eliminarPersona(documento);
+        } catch (Exception e) {
+            System.out.println("Error al eliminar persona: " + e.getMessage());
+            return String.valueOf(false);
+        }
+    }
+
+    public PersonaVO consultarPersona(String documento) throws SQLException {
+        try {
+            return personaDAO.consultarPersona(documento);
+        } catch (Exception e) {
+            System.out.println("Error al consultar persona: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public String actualizarPersona(String documento, String nombre, String telefono) {
+        PersonaVO persona = new PersonaVO();
+        persona.setDocumento(documento);
+        persona.setNombre(nombre);
+        persona.setTelefono(telefono);
+
+        try {
+            return personaDAO.actualizarPersona(persona);
+        } catch (Exception e) {
+            System.out.println("Error al actualizar persona: " + e.getMessage());
+            return String.valueOf(false);
+        }
+    }
+
+    public List<PersonaVO> consultarAllPersona() {
+        try {
+            return personaDAO.consultarListaPersona();
+        } catch (Exception e) {
+            System.out.println("Error al consultar lista de personas: " + e.getMessage());
+            return null;
+        }
+    }
+
+
+    public String registrarMascota(String nombre, String raza, String sexo, String propietario) {
         MascotaVO mascota = new MascotaVO();
         mascota.setNombre(nombre);
         mascota.setRaza(raza);
         mascota.setSexo(sexo);
         mascota.setPropietario(propietario);
-        miMascota.put(propietario, mascota);
-    }
 
-    public PersonaVO consultarPersona(String documento){
-        return miPersona.get(documento);
-    }
-
-    public MascotaVO consultarMascota(String propietario){
-        return miMascota.get(propietario);
-    }
-
-    public void eliminarPersona(String documento){
-            miPersona.remove(documento);
-    }
-
-    public void eliminarMascota(String propietario){
-            miMascota.remove(propietario);
-    }
-
-    public void actualizarPersona(String documento, String nombre, String telefono){
-        PersonaVO persona = miPersona.get(documento);
-        if (persona != null) {
-            persona.setNombre(nombre);
-            persona.setTelefono(telefono);
+        try {
+            return mascotaDAO.registrarMascota(mascota);
+        } catch (Exception e) {
+            System.out.println("Error al registrar mascota: " + e.getMessage());
+            return String.valueOf(false);
         }
     }
 
-    public void actualizarMascota(String nombre, String raza, String sexo, String propietario){
-        MascotaVO mascota = miMascota.get(propietario);
-        if (mascota !=null){
-            mascota.setNombre(nombre);
-            mascota.setRaza(raza);
-            mascota.setSexo(sexo);
+    public String eliminarMascota(String propietario) throws SQLException {
+        try {
+            return mascotaDAO.eliminarMascota(propietario);
+        } catch (Exception e) {
+            System.out.println("Error al eliminar mascota: " + e.getMessage());
+            return String.valueOf(false);
         }
     }
 
-    public ArrayList<MascotaVO> consultarAllMascotas(){
-        return new ArrayList<>(miMascota.values());
+    public MascotaVO consultarMascota(String propietario) throws SQLException {
+        try {
+            return mascotaDAO.consultarMascota(propietario);
+        } catch (Exception e) {
+            System.out.println("Error al consultar mascota: " + e.getMessage());
+            return null;
+        }
     }
 
-    public ArrayList<PersonaVO> consultarAllPersona(){
-        return new ArrayList<>(miPersona.values());
+    public String actualizarMascota(String propietario, String nombreMascota, String raza, String sexo) {
+        MascotaVO mascota = new MascotaVO();
+        mascota.setNombre(nombreMascota);
+        mascota.setRaza(raza);
+        mascota.setSexo(sexo);
+        mascota.setPropietario(propietario);
+
+        try {
+            return mascotaDAO.actualizarMascota(mascota);
+        } catch (Exception e) {
+            System.out.println("Error al actualizar mascota: " + e.getMessage());
+            return String.valueOf(false);
+        }
     }
 
+    public List<MascotaVO> consultarAllMascotas() {
+        try {
+            return mascotaDAO.consultarListaMascota();
+        } catch (Exception e) {
+            System.out.println("Error al consultar lista de mascotas: " + e.getMessage());
+            return null;
+        }
+    }
 
     public void setCoordinador(Coordinador miCoordinador) {
         this.miCoordinador = miCoordinador;
     }
-
-
 }

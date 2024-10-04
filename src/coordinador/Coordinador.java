@@ -1,14 +1,16 @@
 package coordinador;
 
-import animal.MascotaVO;
 import logica.MascotaDAO;
 import logica.PersonaDAO;
+import vo.MascotaVO;
+
 import logica.ProcesosGenerales;
-import persona.PersonaVO;
+import vo.PersonaVO;
 import ventanas.VentanaMascota;
 import ventanas.VentanaPersona;
 import ventanas.VentanaPrincipal;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class Coordinador {
@@ -16,11 +18,12 @@ public class Coordinador {
     private VentanaPrincipal miVPrincipal;
     private VentanaPersona vPersona;
     private VentanaMascota vMascota;
-    private MascotaDAO mascotaDAO;
-    private PersonaDAO personaDAO;
     private MascotaVO miMascota;
     private PersonaVO miPersona;
     private ProcesosGenerales miProceso;
+    private MascotaDAO mascotaDAO;
+    private PersonaDAO personaDAO;
+
 
     public void setVentanaP(VentanaPrincipal miVPrincipal) {
     
@@ -31,7 +34,7 @@ public class Coordinador {
         this.vPersona = vPersona;
     }
 
-    public void setVentanaMusica(VentanaMascota vMascota) {
+    public void setVentanaMascota(VentanaMascota vMascota) {
         this.vMascota = vMascota;
     }
 
@@ -54,8 +57,18 @@ public class Coordinador {
     public void mostrarVentana(int ventana) {
 
         switch(ventana) {
-            case 1: vPersona.setVisible(true); break;
-            case 2: vMascota.setVisible(true); break;
+            case 1:
+                if (vPersona==null){
+                    vPersona= new VentanaPersona();
+                }
+                vPersona.setVisible(true)
+                ; break;
+            case 2:
+                if (vMascota == null) {
+                vMascota = new VentanaMascota(); // Asegúrate de inicializarla
+                }
+                vMascota.setVisible(true);
+                break;
 
         }
 
@@ -74,43 +87,40 @@ public class Coordinador {
     }
 
 
-    public void eliminarPersona(String documento) {
+    public void eliminarPersona(String documento) throws SQLException {
         miProceso.eliminarPersona(documento);
     }
 
-    public PersonaVO consultarPersona(String documento) {
+    public PersonaVO consultarPersona(String documento) throws SQLException {
        return miProceso.consultarPersona(documento);
     }
 
-    public boolean actualizarPersona(String documento, String nombre, String telefono) {
-        miProceso.actualizarPersona(documento, nombre, telefono);
-        return false;
+    public String actualizarPersona(String documento, String nombre, String telefono) {
+        return miProceso.actualizarPersona(documento, nombre, telefono);
+
     }
 
     public List<PersonaVO> consultarListaPersonas() {
-        miProceso.consultarAllPersona();
+       return miProceso.consultarAllPersona();
 
-
-        return List.of();
     }
 
-    public boolean eliminarMascota(String propietario) {
-        miProceso.eliminarMascota(propietario);
-        return true;
+    public String eliminarMascota(String propietario) throws SQLException {
+        return miProceso.eliminarMascota(propietario);
+
     }
 
-    public MascotaVO consultarMascota(String propietario) {
-        miProceso.consultarMascota(propietario);
-        return null;
+    public MascotaVO consultarMascota(String propietario) throws SQLException {
+        return miProceso.consultarMascota(propietario);
+
     }
 
-    public boolean actualizarMascota(String propietario, String nombreMascota, String raza, String sexo) {
-        miProceso.actualizarMascota(propietario, nombreMascota, raza, sexo);
-        return true;
+    public String actualizarMascota(String propietario, String nombreMascota, String raza, String sexo) {
+        return  miProceso.actualizarMascota(propietario, nombreMascota, raza, sexo);
+
     }
 
     public List<MascotaVO> consultarListaMascotas() {
-        miProceso.consultarAllMascotas();
-        return List.of();
+       return miProceso.consultarAllMascotas();
     }
 }

@@ -1,4 +1,4 @@
-package persona;
+package vo;
 
 import coordinador.Coordinador;
 

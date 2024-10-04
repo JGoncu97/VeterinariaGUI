@@ -1,4 +1,4 @@
-package animal;
+package vo;
 
 public class AnimalVO {
 

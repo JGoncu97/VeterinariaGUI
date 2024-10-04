@@ -1,4 +1,4 @@
-package animal;
+package vo;
 
 import coordinador.Coordinador;
 

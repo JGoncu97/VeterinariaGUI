@@ -1,52 +1,59 @@
 package principal;
 
-import animal.MascotaVO;
-import coordinador.Coordinador;
 import logica.MascotaDAO;
 import logica.PersonaDAO;
+import vo.MascotaVO;
+import coordinador.Coordinador;
+
 import logica.ProcesosGenerales;
-import persona.PersonaVO;
+import vo.PersonaVO;
 import ventanas.VentanaMascota;
 import ventanas.VentanaPersona;
 import ventanas.VentanaPrincipal;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 public class Main {
     public static void main(String[] args) {
-        //Declaracion de Clases
-        Coordinador miCoordinador= new Coordinador();
-        VentanaPrincipal miVPrincipal = new VentanaPrincipal();
-        VentanaPersona vPersona= new VentanaPersona();
-        VentanaMascota vMascota = new VentanaMascota();
-        PersonaDAO personaDAO= new PersonaDAO();
-        MascotaDAO mascotaDAO = new MascotaDAO();
-        PersonaVO miPersona = new PersonaVO();
-        MascotaVO miMascota= new MascotaVO();
-        ProcesosGenerales miProceso= new ProcesosGenerales();
 
-        //Establecer Relacion
+        Coordinador miCoordinador = new Coordinador();
+
+
+        // Crear la conexión a la base de datos
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/guiVeterinaria", "root", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+
+        PersonaDAO personaDAO = new PersonaDAO(connection);
+        MascotaDAO mascotaDAO = new MascotaDAO(connection);
+
+        // Pasar los DAOs a ProcesosGenerales
+        ProcesosGenerales miProceso = new ProcesosGenerales(personaDAO, mascotaDAO);
+
+        miCoordinador.setProcesos(miProceso);
+        miCoordinador.setPersonaDao(personaDAO);
+        miCoordinador.setMascotaDao(mascotaDAO);
+
+        // Configuración de las ventanas
+        VentanaPrincipal miVPrincipal = new VentanaPrincipal();
+        VentanaMascota vMascota = new VentanaMascota();
+        VentanaPersona vPersona = new VentanaPersona();
+
+        miCoordinador.setVentanaP(miVPrincipal);
+        miCoordinador.setVentanaMascota(vMascota);
+        miCoordinador.setVentanaPersona(vPersona);
+
         miVPrincipal.setCoordinador(miCoordinador);
         vPersona.setCoordinador(miCoordinador);
         vMascota.setCoordinador(miCoordinador);
-        personaDAO.setCoordinador(miCoordinador);
-        mascotaDAO.setCoordinador(miCoordinador);
-        miMascota.setCoordinador(miCoordinador);
-        miPersona.setCoordinador(miCoordinador);
-        miProceso.setCoordinador(miCoordinador);
 
-
-        //Enviarle una instancia de cada clase al coordinador
-        miCoordinador.setVentanaP(miVPrincipal);
-        miCoordinador.setVentanaPersona(vPersona);
-        miCoordinador.setVentanaMusica(vMascota);
-        miCoordinador.setPersonaDao(personaDAO);
-        miCoordinador.setMascotaDao(mascotaDAO);
-        miCoordinador.setMascotaVO(miMascota);
-        miCoordinador.setPersonaVO(miPersona);
-        miCoordinador.setProcesos(miProceso);
-
-        //Llamado Ventana Principal
         miVPrincipal.setVisible(true);
-
-
     }
 }

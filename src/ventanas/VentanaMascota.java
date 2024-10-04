@@ -1,6 +1,6 @@
 package ventanas;
 
-import animal.MascotaVO;
+import vo.MascotaVO;
 import coordinador.Coordinador;
 
 import javax.swing.*;
@@ -9,6 +9,7 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 
 public class VentanaMascota extends JFrame implements ActionListener {
 
@@ -136,9 +137,17 @@ public class VentanaMascota extends JFrame implements ActionListener {
         if(e.getSource()== btnRegistrar){
             registrarMascota();
         }else if(e.getSource() == btnEliminar){
-            eliminarMascota();
+            try {
+                eliminarMascota();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }else if(e.getSource() == btnConsultar){
-            consultarMascota();
+            try {
+                consultarMascota();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }else if(e.getSource() == btnActualizar){
             actualizarMascota();
         }else if(e.getSource() == btnConsultarList){
@@ -161,22 +170,22 @@ public class VentanaMascota extends JFrame implements ActionListener {
         resultado.setText("Mascota registrada con éxito: " + nombreMascota);
     }
 
-    public void eliminarMascota(){
+    public void eliminarMascota() throws SQLException {
         String propietario = inputId.getText().trim();
         if (propietario.isEmpty()) {
             resultado.setText("Por favor, ingrese el nombre de la mascota para eliminar.");
             return;
         }
 
-        boolean eliminada =miCoordinador.eliminarMascota(propietario);
-        if(eliminada) {
+        String eliminada =miCoordinador.eliminarMascota(propietario);
+        if(eliminada == null) {
             resultado.setText("Mascota eliminada con éxito.");
         }else {
             resultado.setText("Error: Mascota no encontrada.");
         }
     }
 
-    public void consultarMascota(){
+    public void consultarMascota() throws SQLException {
         String propietario = inputId.getText().trim();
         if (propietario.isEmpty()) {
             resultado.setText("Por favor, ingrese el nombre de la mascota para consultar.");
@@ -203,8 +212,8 @@ public class VentanaMascota extends JFrame implements ActionListener {
             return;
         }
 
-        boolean actualizado = miCoordinador.actualizarMascota(propietario, nombreMascota, raza, sexo);
-        if (actualizado) {
+        String actualizado = miCoordinador.actualizarMascota(propietario, nombreMascota, raza, sexo);
+        if (actualizado !=null) {
             resultado.setText("Mascota actualizada con éxito.");
         } else {
             resultado.setText("Error: Mascota no encontrada.");
