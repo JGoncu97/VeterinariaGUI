@@ -24,7 +24,7 @@ public class Main {
         // Crear la conexión a la base de datos
         Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/guiVeterinaria", "root", "");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/guiveterinaria?serverTimezone=UTC", "root", "pipe123.");
         } catch (SQLException e) {
             e.printStackTrace();
             return;

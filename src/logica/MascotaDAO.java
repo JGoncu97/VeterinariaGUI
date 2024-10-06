@@ -21,9 +21,6 @@ public class MascotaDAO extends ProcesosGenerales {
         this.connection = connection;
     }
 
-    public MascotaDAO(PersonaDAO personaDAO, MascotaDAO mascotaDAO) {
-        super(personaDAO, mascotaDAO);
-    }
 
 
     private String conectar() {

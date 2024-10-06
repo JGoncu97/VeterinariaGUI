@@ -21,10 +21,6 @@ public class PersonaDAO extends ProcesosGenerales {
         this.connection = connection;
     }
 
-    public PersonaDAO(PersonaDAO personaDAO, MascotaDAO mascotaDAO) {
-        super(personaDAO, mascotaDAO);
-    }
-
 
 
     private String conectar(){
@@ -43,18 +39,19 @@ public class PersonaDAO extends ProcesosGenerales {
 
     public String registrarPersona(PersonaVO miPersona) throws SQLException {
         String resultado="";
-        if(!conectar().equals("conectado")){
+        if(!conectar().equals("Conectado")){
             return "error";
         }
-        String consulta = "INSERT INTO persona (documento, telefono, nombre) VALUES (?, ?, ?)";
+        String consulta = "INSERT INTO persona (documento, nombre, telefono) VALUES (?, ?, ?)";
         try {
 
             prepareStatement = connection.prepareStatement(consulta);
 
             prepareStatement.setString(1, miPersona.getDocumento());
-            prepareStatement.setString(2, miPersona.getTelefono());
-            prepareStatement.setString(3, miPersona.getNombre());
-            prepareStatement.execute();
+            prepareStatement.setString(2, miPersona.getNombre());
+            prepareStatement.setString(3, miPersona.getTelefono());
+            System.out.println("Ejecutando consulta: " + prepareStatement.toString());
+            prepareStatement.executeUpdate();
 
             resultado = "ok";
         } catch (SQLException e) {
