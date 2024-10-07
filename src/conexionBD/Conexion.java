@@ -25,8 +25,10 @@ public class Conexion {
             conn= DriverManager.getConnection(url,usuario,password);
             if(conn!=null){
                 respuesta= "Conectado";
+                System.out.println("Conexion exitosa! a la BD :"+nombreBd);
             }else{
                 respuesta= "No se pudo conectar a "+nombreBd;
+                System.out.println("no se pudo conectar a la base de datos");
             }
 
         }catch (SQLSyntaxErrorException e ){
